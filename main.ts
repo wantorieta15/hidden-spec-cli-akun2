@@ -324,7 +324,9 @@ function unifiedEdits(lines: string[], strict: boolean): Edit[] {
   while (i < lines.length) {
     const line = lines[i]!;
     if (line.startsWith('diff --git ')) {
-      const m = line.match(/^diff --git a\/(.+?) b\/(.+)$/);
+      // SPEC section 6: the line is exactly `diff --git a/<X> b/<Y>`; the two
+      // paths are single tokens, so any trailing text makes it malformed.
+      const m = line.match(/^diff --git a\/(\S+) b\/(\S+)$/);
       if (m === null) throw new Exit2(`error: parse ${i + 1}`);
       const s = newSection();
       s.diffOld = m[1]!;
